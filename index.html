@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ciara and Katie's Friendaversary</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Added for mobile responsiveness -->
+    <style>
+        /* CSS Styling */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            font-family: 'Times New Roman', serif;
+            /* Initial background image */
+            background-image: url('christmas-background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            /* Prevent background animation before envelope is opened */
+            animation: none;
+            /* Remove overflow: hidden to allow scrolling */
+            overflow: auto;
+        }
+
+        /* Ensure html element allows scrolling */
+        html {
+            overflow: auto;
+        }
+
+        #envelope-container {
+            position: fixed; /* Changed from relative to fixed */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            z-index: 9999; /* Ensure the envelope is on top */
+        }
+
+        #envelope {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 50vw; /* Adjusted for responsiveness */
+            max-width: 300px;
+            height: auto;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            transition: transform 0.7s;
+        }
+
+        #open-invitation-text {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 5vw; /* Adjusted for responsiveness */
+            color: #006400; /* Dark green color */
+            font-weight: bold;
+            text-shadow: 1px 1px 2px #ffffff;
+        }
+
+        #invitation-content {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            color: #333333;
+            padding: 0 5%; /* Added padding for mobile */
+        }
+
+        h1 {
+            color: #8B0000; /* Dark red color */
+            font-size: 10vw; /* Adjusted for responsiveness */
+            margin-top: 20px;
+            font-weight: bold;
+            text-shadow: 2px 2px 5px #ffffff; /* Added text shadow */
+        }
+
+        /* Enhanced Invitation message styling */
+        #invitation-message {
+            font-size: 5vw; /* Adjusted for responsiveness */
+            margin: 20px;
+            line-height: 1.5;
+            color: #006400; /* Dark green color */
+            font-weight: bold;
+            text-shadow: 1px 1px 3px #ffffff;
+        }
+
+        /* Style for the word "friendaversary" */
+        .highlight-word {
+            display: inline-block;
+            animation: pulseWord 1s infinite;
+        }
+
+        @keyframes pulseWord {
+            0% { transform: scale(1); color: #006400; }
+            50% { transform: scale(1.5); color: #8B0000; }
+            100% { transform: scale(1); color: #006400; }
+        }
+
+        /* Style for the Fun Fact button */
+        #fun-fact-button {
+            margin-top: 20px;
+            padding: 3vw 6vw; /* Adjusted for responsiveness */
+            font-size: 4vw; /* Adjusted for responsiveness */
+            background-color: #8B0000;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #fun-fact-button:hover {
+            background-color: #006400;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 10000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 30% auto; /* Adjusted for mobile */
+            padding: 20px;
+            border: 2px solid #8B0000;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .close-button {
+            color: #8B0000;
+            float: right;
+            font-size: 8vw; /* Adjusted for responsiveness */
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: #006400;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Carousel styles */
+        .carousel {
+            position: relative;
+            margin: 20px auto;
+            overflow: hidden;
+            border: 2px solid #006400;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+            width: 100%; /* Responsive width */
+            display: none; /* Initially hidden */
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-item {
+            min-width: 100%;
+            flex-shrink: 0;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: auto;
+            max-height: 60vh; /* Adjusted for mobile */
+            margin: 0 auto;
+            display: block;
+        }
+
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            background: rgba(139, 0, 0, 0.7);
+            border: none;
+            padding: 3vw; /* Adjusted for responsiveness */
+            border-radius: 50%;
+            font-size: 6vw; /* Adjusted for responsiveness */
+            cursor: pointer;
+            color: #ffffff;
+            transform: translateY(-50%);
+        }
+
+        .prev-button {
+            left: 2vw;
+        }
+
+        .next-button {
+            right: 2vw;
+        }
+
+        /* Background flashing animation */
+        @keyframes flashRedGreen {
+            0%   { background-color: red; }
+            50%  { background-color: green; }
+            100% { background-color: red; }
+        }
+
+        .flashing-background {
+            animation: flashRedGreen 2s infinite;
+            background-image: none; /* Remove background image during animation */
+        }
+
+        /* Remove default margins and paddings */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        /* Flashing Friendaversary Text */
+        #flashing-friendaversary {
+            display: none; /* Initially hidden */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12vw; /* Adjusted for responsiveness */
+            color: #8B0000; /* Dark red */
+            font-weight: bold;
+            text-shadow: 2px 2px 5px #ffffff;
+            animation: flashText 0.75s 2;
+            animation-fill-mode: forwards;
+            z-index: 10000; /* On top */
+            text-align: center;
+            padding: 0 5%; /* Added padding for small screens */
+        }
+
+        @keyframes flashText {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* Rain of Friendaversary Words */
+        #rain-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Allow clicks through */
+            overflow: hidden;
+            z-index: 999; /* Behind the flashing friendaversary */
+        }
+
+        .rain-element {
+            position: absolute;
+            top: -50px; /* Start above the viewport */
+            font-size: 3vw; /* Adjusted for responsiveness */
+            color: #8B0000;
+            font-weight: bold;
+            animation-name: fall;
+            animation-duration: 5s;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+        }
+        @keyframes fall {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh);
+                opacity: 0;
+            }
+        }
+
+        /* Adjustments for smaller screens */
+        @media (max-width: 600px) {
+            /* Adjust font sizes */
+            h1 {
+                font-size: 8vw;
+            }
+            #invitation-message {
+                font-size: 4vw;
+            }
+            #fun-fact-button {
+                font-size: 4vw;
+                padding: 3vw 5vw;
+            }
+            .close-button {
+                font-size: 10vw;
+            }
+        }
+    </style>
+    <!-- Include Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Envelope Image and Text -->
+    <div id="envelope-container">
+        <img id="envelope" src="envelope.png" alt="Envelope">
+        <div id="open-invitation-text">Open Your Invitation</div>
+    </div>
+
+    <!-- Flashing Friendaversary -->
+    <div id="flashing-friendaversary">Friendaversary</div>
+
+    <!-- Invitation Content -->
+    <div id="invitation-content">
+        <h1>You're Invited!</h1>
+        <div id="invitation-message">
+            <p>You are cordially invited to celebrate Katie and Ciara's one-year <span class="highlight-word">friendaversary</span>.</p>
+            <p>Join us for an evening of joy and friendship during this festive season.</p>
+        </div>
+
+        <!-- Fun Fact Button -->
+        <button id="fun-fact-button">Click for a Fun Fact!</button>
+
+        <!-- Modal for Fun Fact -->
+        <div id="fun-fact-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <p>Ciara and Katie, aka the Yankee Zulus, can both say the NATO phonetic alphabet in under 6 seconds!</p>
+            </div>
+        </div>
+
+        <!-- Carousel -->
+        <div class="carousel">
+            <!-- Carousel Items -->
+            <div class="carousel-track">
+                <div class="carousel-item active">
+                    <img src="1.jpeg" alt="Image 1">
+                </div>
+                <div class="carousel-item">
+                    <img src="2.jpeg" alt="Image 2">
+                </div>
+                <div class="carousel-item">
+                    <img src="3.jpeg" alt="Image 3">
+                </div>
+                <div class="carousel-item">
+                    <img src="4.jpeg" alt="Image 4">
+                </div>
+                <div class="carousel-item">
+                    <img src="5.jpeg" alt="Image 5">
+                </div>
+                <div class="carousel-item">
+                    <img src="6.jpeg" alt="Image 6">
+                </div>
+            </div>
+            <!-- Carousel Buttons -->
+            <button class="carousel-button prev-button"><i class="fas fa-chevron-left"></i></button>
+            <button class="carousel-button next-button"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="background-audio">
+        <source src="song.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- JavaScript for Envelope Animation, Carousel, Audio, and Fun Fact Modal -->
+    <script>
+        const envelope = document.getElementById('envelope');
+        const envelopeContainer = document.getElementById('envelope-container');
+        const invitationContent = document.getElementById('invitation-content');
+        const audio = document.getElementById('background-audio');
+
+        envelope.addEventListener('click', function() {
+            // Simulate envelope opening with animation
+            envelope.style.transform = 'rotateX(90deg) translate(-50%, -50%)';
+            envelope.style.transition = 'transform 0.7s';
+
+            // Hide the "Open Your Invitation" text
+            document.getElementById('open-invitation-text').style.display = 'none';
+
+            // After the animation, show the flashing friendaversary
+            setTimeout(function() {
+                // Hide the envelope container
+                envelopeContainer.style.display = 'none';
+
+                // Show the flashing friendaversary
+                const flashingText = document.getElementById('flashing-friendaversary');
+                flashingText.style.display = 'block';
+
+                // Start playing the music as the flashing text starts
+                var playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(function() {
+                        // Automatic playback started!
+                    }).catch(function(error) {
+                        // Autoplay was prevented.
+                        console.log('Autoplay was prevented. User interaction is required to play the audio.');
+                    });
+                }
+
+                // After the animation ends, hide the flashing friendaversary and show the invitation content
+                flashingText.addEventListener('animationend', function() {
+                    flashingText.style.display = 'none';
+
+                    // Show the invitation content
+                    invitationContent.style.display = 'block';
+
+                    // Start the background flashing animation
+                    document.body.classList.add('flashing-background');
+
+                    // Start the carousel auto-sliding
+                    startCarouselAutoSlide();
+
+                    // Start raining small friendaversary words
+                    startRain();
+                }, { once: true });
+
+            }, 700); // Match delay with animation duration
+        });
+
+        // Function to start the rain effect
+        function startRain() {
+            // Create a container for the rain elements
+            const rainContainer = document.createElement('div');
+            rainContainer.id = 'rain-container';
+            document.body.appendChild(rainContainer);
+
+            // Function to create rain elements at intervals
+            const rainInterval = setInterval(() => {
+                createRainElement(rainContainer);
+            }, 200); // Create a new element every 200ms
+
+            // Optional: Stop the rain after some time
+            // setTimeout(() => {
+            //     clearInterval(rainInterval);
+            // }, 10000); // Stop rain after 10 seconds
+        }
+
+        function createRainElement(container) {
+            const rainElement = document.createElement('div');
+            rainElement.classList.add('rain-element');
+            rainElement.textContent = 'Friendaversary';
+
+            // Randomize initial position and delay
+            const delay = Math.random() * 5; // Delay between 0 and 5 seconds
+            const leftPosition = Math.random() * 100; // Position between 0% and 100%
+
+            rainElement.style.left = leftPosition + 'vw';
+            rainElement.style.animationDelay = delay + 's';
+
+            container.appendChild(rainElement);
+
+            // Remove the element after animation ends
+            rainElement.addEventListener('animationend', () => {
+                rainElement.parentNode.removeChild(rainElement);
+            });
+        }
+
+        // Carousel Functionality
+        const track = document.querySelector('.carousel-track');
+        const slides = Array.from(track.children);
+        const nextButton = document.querySelector('.next-button');
+        const prevButton = document.querySelector('.prev-button');
+        let slideWidth;
+
+        function setSlidePosition(slide, index) {
+            slide.style.left = slideWidth * index + 'px';
+        }
+
+        function moveToSlide(track, currentSlide, targetSlide) {
+            const targetIndex = slides.indexOf(targetSlide);
+            const amountToMove = -slideWidth * targetIndex;
+            track.style.transform = 'translateX(' + amountToMove + 'px)';
+            currentSlide.classList.remove('active');
+            targetSlide.classList.add('active');
+        }
+
+        function startCarouselAutoSlide() {
+            // Show the carousel
+            document.querySelector('.carousel').style.display = 'block';
+
+            // Set slide width based on the carousel's width
+            slideWidth = document.querySelector('.carousel').offsetWidth;
+
+            // Arrange the slides next to one another
+            slides.forEach(setSlidePosition);
+
+            let slideInterval = setInterval(function() {
+                const currentSlide = track.querySelector('.active');
+                let nextSlide = currentSlide.nextElementSibling;
+                if (!nextSlide) {
+                    nextSlide = slides[0]; // Loop back to the first slide
+                }
+                moveToSlide(track, currentSlide, nextSlide);
+            }, 2000); // Change slide every 2 seconds
+
+            // Optional: Pause on hover or touch
+            const carousel = document.querySelector('.carousel');
+            carousel.addEventListener('mouseover', function() {
+                clearInterval(slideInterval);
+            });
+            carousel.addEventListener('mouseout', function() {
+                slideInterval = setInterval(function() {
+                    const currentSlide = track.querySelector('.active');
+                    let nextSlide = currentSlide.nextElementSibling;
+                    if (!nextSlide) {
+                        nextSlide = slides[0];
+                    }
+                    moveToSlide(track, currentSlide, nextSlide);
+                }, 2000);
+            });
+            // Pause on touchstart for mobile devices
+            carousel.addEventListener('touchstart', function() {
+                clearInterval(slideInterval);
+            });
+            carousel.addEventListener('touchend', function() {
+                slideInterval = setInterval(function() {
+                    const currentSlide = track.querySelector('.active');
+                    let nextSlide = currentSlide.nextElementSibling;
+                    if (!nextSlide) {
+                        nextSlide = slides[0];
+                    }
+                    moveToSlide(track, currentSlide, nextSlide);
+                }, 2000);
+            });
+        }
+
+        // Next and Prev Buttons
+        nextButton.addEventListener('click', e => {
+            const currentSlide = track.querySelector('.active');
+            let nextSlide = currentSlide.nextElementSibling;
+            if (!nextSlide) {
+                nextSlide = slides[0];
+            }
+            moveToSlide(track, currentSlide, nextSlide);
+        });
+
+        prevButton.addEventListener('click', e => {
+            const currentSlide = track.querySelector('.active');
+            let prevSlide = currentSlide.previousElementSibling;
+            if (!prevSlide) {
+                prevSlide = slides[slides.length - 1];
+            }
+            moveToSlide(track, currentSlide, prevSlide);
+        });
+
+        // Adjust slide positions on window resize
+        window.addEventListener('resize', () => {
+            slideWidth = document.querySelector('.carousel').offsetWidth;
+            slides.forEach(setSlidePosition);
+            const currentSlide = track.querySelector('.active');
+            const targetIndex = slides.indexOf(currentSlide);
+            const amountToMove = -slideWidth * targetIndex;
+            track.style.transform = 'translateX(' + amountToMove + 'px)';
+        });
+
+        // Fun Fact Modal Functionality
+        const funFactButton = document.getElementById('fun-fact-button');
+        const funFactModal = document.getElementById('fun-fact-modal');
+        const closeButton = document.querySelector('.close-button');
+
+        funFactButton.addEventListener('click', () => {
+            funFactModal.style.display = 'block';
+        });
+
+        closeButton.addEventListener('click', () => {
+            funFactModal.style.display = 'none';
+        });
+
+        // Close modal when clicking outside of it
+        window.addEventListener('click', (event) => {
+            if (event.target == funFactModal) {
+                funFactModal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
