@@ -115,95 +115,99 @@
         }
 
         /* Modal Styles */
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed;
-            z-index: 10000; /* Sit on top */
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgba(0,0,0,0.5); /* Black background with opacity */
-        }
+       /* Modal styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 10000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+}
 
-        .modal-content {
-            background-color: #fff;
-            margin: 30% auto; /* Adjusted for mobile */
-            padding: 20px;
-            border: 2px solid #8B0000;
-            width: 90%;
-            max-width: 500px;
-            border-radius: 10px;
-            text-align: center;
-        }
+.modal-content {
+    background-color: #fff;
+    margin: 30% auto; /* Adjusted for mobile */
+    padding: 20px;
+    border: 2px solid #8B0000;
+    width: 90%;
+    max-width: 300px;
+    border-radius: 10px;
+    text-align: center;
+}
 
-        .close-button {
-            color: #8B0000;
-            float: right;
-            font-size: 8vw; /* Adjusted for responsiveness */
-            font-weight: bold;
-            cursor: pointer;
-        }
+.close-button {
+    color: #8B0000;
+    float: right;
+    font-size: 8vw; /* Adjusted for responsiveness */
+    font-weight: bold;
+    cursor: pointer;
+}
 
-        .close-button:hover,
-        .close-button:focus {
-            color: #006400;
-            text-decoration: none;
-            cursor: pointer;
-        }
+.close-button:hover,
+.close-button:focus {
+    color: #006400;
+    text-decoration: none;
+    cursor: pointer;
+}
 
-        /* Carousel styles */
-        .carousel {
-            position: relative;
-            margin: 20px auto;
-            overflow: hidden;
-            border: 2px solid #006400;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            max-width: 800px;
-            width: 100%; /* Responsive width */
-            display: none; /* Initially hidden */
-        }
+.carousel {
+    position: relative;
+    margin: 20px auto;
+    overflow: hidden;
+    border: 2px solid #006400;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    width: 100%; /* Responsive width */
+}
 
-        .carousel-track {
-            display: flex;
-            transition: transform 0.5s ease-in-out;
-        }
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    /* Remove any positioning styles */
+}
 
-        .carousel-item {
-            min-width: 100%;
-            flex-shrink: 0;
-        }
+.carousel-item {
+    flex: 0 0 100%; /* Each item takes up 100% of the carousel width */
+    /* Remove min-width and any positioning styles */
+}
 
-        .carousel-item img {
-            width: 100%;
-            height: auto;
-            max-height: 60vh; /* Adjusted for mobile */
-            margin: 0 auto;
-            display: block;
-        }
+.carousel-item img {
+    width: 100%;
+    height: auto;
+    object-fit: contain; /* Ensures full image fits without cropping */
+    max-height: 60vh; /* Limit height on mobile for better fit */
+    margin: 0 auto;
+    display: block;
+}
 
-        .carousel-button {
-            position: absolute;
-            top: 50%;
-            background: rgba(139, 0, 0, 0.7);
-            border: none;
-            padding: 3vw; /* Adjusted for responsiveness */
-            border-radius: 50%;
-            font-size: 6vw; /* Adjusted for responsiveness */
-            cursor: pointer;
-            color: #ffffff;
-            transform: translateY(-50%);
-        }
+/* Carousel Buttons */
+.carousel-button {
+    position: absolute;
+    top: 50%;
+    background: rgba(139, 0, 0, 0.7);
+    border: none;
+    padding: 3vw; /* Adjusted for responsiveness */
+    border-radius: 50%;
+    font-size: 6vw; /* Adjusted for responsiveness */
+    cursor: pointer;
+    color: #ffffff;
+    transform: translateY(-50%);
+}
 
-        .prev-button {
-            left: 2vw;
-        }
+.prev-button {
+    left: 2vw;
+}
 
-        .next-button {
-            right: 2vw;
-        }
+.next-button {
+    right: 2vw;
+}
+
+
 
         /* Background flashing animation */
         @keyframes flashRedGreen {
@@ -459,103 +463,102 @@
             });
         }
 
-        // Carousel Functionality
-        const track = document.querySelector('.carousel-track');
-        const slides = Array.from(track.children);
-        const nextButton = document.querySelector('.next-button');
-        const prevButton = document.querySelector('.prev-button');
-        let slideWidth;
 
-        function setSlidePosition(slide, index) {
-            slide.style.left = slideWidth * index + 'px';
+
+// Carousel Functionality
+const track = document.querySelector('.carousel-track');
+const slides = Array.from(track.children);
+const nextButton = document.querySelector('.next-button');
+const prevButton = document.querySelector('.prev-button');
+
+function moveToSlide(track, currentSlide, targetSlide) {
+    const targetIndex = slides.indexOf(targetSlide);
+    const amountToMove = -100 * targetIndex; // Use percentage
+    track.style.transform = 'translateX(' + amountToMove + '%)';
+    currentSlide.classList.remove('active');
+    targetSlide.classList.add('active');
+}
+
+function startCarouselAutoSlide() {
+    // Show the carousel
+    document.querySelector('.carousel').style.display = 'block';
+
+    // No need to set slide width or positions
+
+    let slideInterval = setInterval(function() {
+        const currentSlide = track.querySelector('.active');
+        let nextSlide = currentSlide.nextElementSibling;
+        if (!nextSlide) {
+            nextSlide = slides[0]; // Loop back to the first slide
         }
+        moveToSlide(track, currentSlide, nextSlide);
+    }, 3000); // Change slide every 2 seconds
 
-        function moveToSlide(track, currentSlide, targetSlide) {
-            const targetIndex = slides.indexOf(targetSlide);
-            const amountToMove = -slideWidth * targetIndex;
-            track.style.transform = 'translateX(' + amountToMove + 'px)';
-            currentSlide.classList.remove('active');
-            targetSlide.classList.add('active');
-        }
-
-        function startCarouselAutoSlide() {
-            // Show the carousel
-            document.querySelector('.carousel').style.display = 'block';
-
-            // Set slide width based on the carousel's width
-            slideWidth = document.querySelector('.carousel').offsetWidth;
-
-            // Arrange the slides next to one another
-            slides.forEach(setSlidePosition);
-
-            let slideInterval = setInterval(function() {
-                const currentSlide = track.querySelector('.active');
-                let nextSlide = currentSlide.nextElementSibling;
-                if (!nextSlide) {
-                    nextSlide = slides[0]; // Loop back to the first slide
-                }
-                moveToSlide(track, currentSlide, nextSlide);
-            }, 2000); // Change slide every 2 seconds
-
-            // Optional: Pause on hover or touch
-            const carousel = document.querySelector('.carousel');
-            carousel.addEventListener('mouseover', function() {
-                clearInterval(slideInterval);
-            });
-            carousel.addEventListener('mouseout', function() {
-                slideInterval = setInterval(function() {
-                    const currentSlide = track.querySelector('.active');
-                    let nextSlide = currentSlide.nextElementSibling;
-                    if (!nextSlide) {
-                        nextSlide = slides[0];
-                    }
-                    moveToSlide(track, currentSlide, nextSlide);
-                }, 2000);
-            });
-            // Pause on touchstart for mobile devices
-            carousel.addEventListener('touchstart', function() {
-                clearInterval(slideInterval);
-            });
-            carousel.addEventListener('touchend', function() {
-                slideInterval = setInterval(function() {
-                    const currentSlide = track.querySelector('.active');
-                    let nextSlide = currentSlide.nextElementSibling;
-                    if (!nextSlide) {
-                        nextSlide = slides[0];
-                    }
-                    moveToSlide(track, currentSlide, nextSlide);
-                }, 2000);
-            });
-        }
-
-        // Next and Prev Buttons
-        nextButton.addEventListener('click', e => {
+    // Optional: Pause on hover or touch
+    const carousel = document.querySelector('.carousel');
+    carousel.addEventListener('mouseover', function() {
+        clearInterval(slideInterval);
+    });
+    carousel.addEventListener('mouseout', function() {
+        slideInterval = setInterval(function() {
             const currentSlide = track.querySelector('.active');
             let nextSlide = currentSlide.nextElementSibling;
             if (!nextSlide) {
                 nextSlide = slides[0];
             }
             moveToSlide(track, currentSlide, nextSlide);
-        });
-
-        prevButton.addEventListener('click', e => {
+        }, 2000);
+    });
+    // Pause on touchstart for mobile devices
+    carousel.addEventListener('touchstart', function() {
+        clearInterval(slideInterval);
+    });
+    carousel.addEventListener('touchend', function() {
+        slideInterval = setInterval(function() {
             const currentSlide = track.querySelector('.active');
-            let prevSlide = currentSlide.previousElementSibling;
-            if (!prevSlide) {
-                prevSlide = slides[slides.length - 1];
+            let nextSlide = currentSlide.nextElementSibling;
+            if (!nextSlide) {
+                nextSlide = slides[0];
             }
-            moveToSlide(track, currentSlide, prevSlide);
-        });
+            moveToSlide(track, currentSlide, nextSlide);
+        }, 2000);
+    });
+}
 
-        // Adjust slide positions on window resize
-        window.addEventListener('resize', () => {
-            slideWidth = document.querySelector('.carousel').offsetWidth;
-            slides.forEach(setSlidePosition);
-            const currentSlide = track.querySelector('.active');
-            const targetIndex = slides.indexOf(currentSlide);
-            const amountToMove = -slideWidth * targetIndex;
-            track.style.transform = 'translateX(' + amountToMove + 'px)';
-        });
+// Next and Prev Buttons
+nextButton.addEventListener('click', e => {
+    const currentSlide = track.querySelector('.active');
+    let nextSlide = currentSlide.nextElementSibling;
+    if (!nextSlide) {
+        nextSlide = slides[0];
+    }
+    moveToSlide(track, currentSlide, nextSlide);
+});
+
+prevButton.addEventListener('click', e => {
+    const currentSlide = track.querySelector('.active');
+    let prevSlide = currentSlide.previousElementSibling;
+    if (!prevSlide) {
+        prevSlide = slides[slides.length - 1];
+    }
+    moveToSlide(track, currentSlide, prevSlide);
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         // Fun Fact Modal Functionality
         const funFactButton = document.getElementById('fun-fact-button');
