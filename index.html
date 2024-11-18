@@ -26,38 +26,49 @@
             overflow: auto;
         }
 
-        #envelope-container {
-            position: fixed; /* Changed from relative to fixed */
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            z-index: 9999; /* Ensure the envelope is on top */
-        }
+        /* Envelope Container */
+#envelope-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 
-        #envelope {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 50vw; /* Adjusted for responsiveness */
-            max-width: 300px;
-            height: auto;
-            transform: translate(-50%, -50%);
-            cursor: pointer;
-            transition: transform 0.7s;
-        }
+/* Envelope Content Wrapper */
+#envelope-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    perspective: 1000px; /* For 3D rotation effect */
+}
 
-        #open-invitation-text {
-            position: absolute;
-            bottom: 40px;
-            width: 100%;
-            text-align: center;
-            font-size: 5vw; /* Adjusted for responsiveness */
-            color: #006400; /* Dark green color */
-            font-weight: bold;
-            text-shadow: 1px 1px 2px #ffffff;
-        }
+/* Envelope Image */
+#envelope {
+    width: 50vw;
+    max-width: 300px;
+    height: auto;
+    cursor: pointer;
+    transition: transform 0.7s;
+    transform-origin: center top;
+}
+
+/* Open Invitation Text */
+#open-invitation-text {
+    margin-top: 20px;
+    width: 100%;
+    text-align: center;
+    font-size: 5vw;
+    color: #006400;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px #ffffff;
+}
 
         #invitation-content {
             display: none;
@@ -308,10 +319,7 @@
 <body>
 
     <!-- Envelope Image and Text -->
-    <div id="envelope-container">
-        <img id="envelope" src="envelope.png" alt="Envelope">
-        <div id="open-invitation-text">Open Your Invitation</div>
-    </div>
+   
 
     <!-- Flashing Friendaversary -->
     <div id="flashing-friendaversary">Friendaversary</div>
